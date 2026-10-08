@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ message.subject }}{% endblock %}
+{% block content %}
+<h2>{{ message.subject }}</h2>
+<div class="card mt-3" style="max-width: 700px;">
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Тело письма</h6>
+        <p class="card-text" style="white-space: pre-wrap;">{{ message.body }}</p>
+    </div>
+</div>
+{% if not user.is_manager %}
+<a href="{% url 'mailing:message_update' message.pk %}" class="btn btn-warning mt-3">Изменить</a>
+<a href="{% url 'mailing:message_delete' message.pk %}" class="btn btn-danger mt-3">Удалить</a>
+{% endif %}
+<a href="{% url 'mailing:message_list' %}" class="btn btn-outline-secondary mt-3">Назад</a>
+{% endblock %}

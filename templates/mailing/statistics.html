@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Статистика{% endblock %}
+{% block content %}
+<h2>Статистика рассылок</h2>
+<div class="row g-4 mt-2">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title fs-1 text-primary">{{ stats.mailings_count }}</h5>
+                <p class="card-text">Всего рассылок</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title fs-1 text-success">{{ stats.success_count }}</h5>
+                <p class="card-text">Успешных попыток</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title fs-1 text-danger">{{ stats.fail_count }}</h5>
+                <p class="card-text">Неуспешных попыток</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title fs-1 text-info">{{ stats.sent_messages }}</h5>
+                <p class="card-text">Отправлено сообщений</p>
+            </div>
+        </div>
+    </div>
+</div>
+<p class="text-muted mt-3"><small>Данные кешируются на 60 секунд</small></p>
+{% endblock %}

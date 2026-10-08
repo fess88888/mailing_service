@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Удаление сообщения{% endblock %}
+{% block content %}
+<h2>Удалить сообщение?</h2>
+<p class="text-danger">Вы уверены, что хотите удалить «{{ object.subject }}»?</p>
+<form method="post" class="mt-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Да, удалить</button>
+    <a href="{% url 'mailing:message_list' %}" class="btn btn-outline-secondary">Отмена</a>
+</form>
+{% endblock %}
