@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Подтверждение email{% endblock %}
+{% block content %}
+<div class="text-center mt-5">
+    {% if success %}
+    <div class="alert alert-success">
+        <h3>Email подтверждён!</h3>
+        <p>Добро пожаловать! Вы успешно активировали аккаунт.</p>
+        <a href="{% url 'mailing:home' %}" class="btn btn-primary">На главную</a>
+    </div>
+    {% else %}
+    <div class="alert alert-danger">
+        <h3>Ссылка недействительна</h3>
+        <p>Возможно, аккаунт уже активирован или ссылка устарела.</p>
+        <a href="{% url 'users:register' %}" class="btn btn-outline-primary">Зарегистрироваться заново</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

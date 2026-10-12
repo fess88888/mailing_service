@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Рассылка #{{ mailing.pk }}{% endblock %}
+{% block content %}
+<h2>Рассылка #{{ mailing.pk }}</h2>
+<div class="card mt-3 mb-3" style="max-width: 700px;">
+    <div class="card-body">
+        <p><strong>Сообщение:</strong> {{ mailing.message.subject }}</p>
+        <p><strong>Начало:</strong> {{ mailing.start_time|date:"d.m.Y H:i" }}</p>
+        <p><strong>Окончание:</strong> {{ mailing.end_time|date:"d.m.Y H:i" }}</p>
+        <p><strong>Статус:</strong>
+            {% if mailing.is_disabled %}
+                <span class="badge bg-danger">Отключена</span>
+            {% else %}
+                {% with status=mailing.status %}
+                    {% if status == 'Создана' %}<span class="badge bg-secondary">{{ status }}</span>
+                    {% elif status == 'Запущена' %}<span class="badge bg-success">{{ status }}</span>
+                    {% else %}<span class="badge bg-dark">{{ status }}</span>
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+        </p>
+        <p><strong>Получатели:</strong></p>
+        <ul>
+            {% for r in mailing.recipients.all %}
+            <li>{{ r.full_name }} — {{ r.email }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% if not user.is_manager and mailing.owner == user %}
+<button onclick="sendMailing({{ mailing.pk }})" class="btn btn-primary"
+        {% if mailing.is_disabled or mailing.status != 'Запущена' %}disabled{% endif %}>
+    Отправить рассылку
+</button>
+<a href="{% url 'mailing:mailing_update' mailing.pk %}" class="btn btn-warning">Изменить</a>
+<a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-danger">Удалить</a>
+{% endif %}
+
+{% if user.is_manager %}
+<a href="{% url 'mailing:mailing_toggle_disable' mailing.pk %}" class="btn btn-outline-dark">
+    {% if mailing.is_disabled %}Включить{% else %}Отключить{% endif %}
+</a>
+{% endif %}
+
+<a href="{% url 'mailing:mailing_list' %}" class="btn btn-outline-secondary">Назад</a>
+
+{% if attempts %}
+<h4 class="mt-4">Последние попытки отправки</h4>
+<table class="table table-sm">
+    <thead><tr><th>Время</th><th>Статус</th><th>Ответ сервера</th></tr></thead>
+    <tbody>
+        {% for a in attempts %}
+        <tr>
+            <td>{{ a.attempt_time|date:"d.m.Y H:i" }}</td>
+            <td>
+                {% if a.status == 'Успешно' %}<span class="text-success">{{ a.status }}</span>
+                {% else %}<span class="text-danger">{{ a.status }}</span>{% endif %}
+            </td>
+            <td>{{ a.server_response|truncatechars:100 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<script>
+function sendMailing(pk) {
+    fetch(`/mailings/${pk}/send/`, { method: 'GET', redirect: 'follow' })
+        .then(() => window.location.reload());
+}
+</script>
+{% endblock %}
